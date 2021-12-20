@@ -1,0 +1,21 @@
+.existingRoyalties { 
+    margin-bottom: .5rem !important;
+    
+    input {
+        max-width: 80px;
+    }
+}
+
+.price {
+    display: flex;
+    align-items: center;
+
+    input {
+        max-width: 200px;
+    }
+
+    img {
+        height: 30px;
+        padding-right: 8px;
+    }
+}

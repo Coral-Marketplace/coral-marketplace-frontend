@@ -1,0 +1,163 @@
+<div class="row m-0">
+    <ng-container *ngIf="nfts">
+        <div *ngIf="!nfts.length && emptyMessageKey" class="col-12 mt-4 empty">
+            <div class="d-flex justify-content-center align-items-center">
+                <img src="./../../../assets/img/sad.svg">
+                <span>{{ emptyMessageKey | translate }}</span>
+            </div>
+        </div>
+
+        <ng-container *ngIf="typeItem == TypeItem.REGULAR">
+            <div *ngFor="let nft of nfts" class="col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                <div class="card">
+                    <div class="card-img-top hover-pointer" [ngClass]="{'no-image': !nft.imageURI}" routerLink="/asset/{{nft.itemId}}">
+                        <img *ngIf="nft.imageURI" src="{{ nft.imageURI }}">
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="nft.collection" class="card-text nft-collection hover-pointer" routerLink="/collection/{{nft.collection.id}}">
+                            {{ (nft.collection.name.length>30) ? (nft.collection.name | slice:0:30)+'...' : (nft.collection.name) }}
+                        </div>
+                        <div *ngIf="!nft.collection" class="card-text nft-collection"></div>
+                        <div class="card-text nft-name hover-pointer" routerLink="/asset/{{nft.itemId}}">
+                            {{ (nft.name.length>30) ? (nft.name | slice:0:30)+'...' : (nft.name) }}
+                        </div>
+                        <div *ngIf="nft.typeItem == TypeItem.REGULAR" class="card-text price">
+                            <img src="./../../assets/img/REEF_logo_small.png">
+                            <span>{{ nft.priceFormatted | number:'1.0-2' }}</span>
+                        </div>
+                        <ng-container *ngIf="nft.typeItem == TypeItem.AUCTION">
+                            <div *ngIf="$any(nft).highestBidFormatted" class="card-text price">
+                                <label class="dimmed">{{ 'nft.highest-bid' | translate }}</label>
+                                <div class="price">
+                                    <img src="./../../assets/img/REEF_logo_small.png">
+                                    <span class="reef-price">{{ $any(nft).highestBidFormatted | number:'1.0-2' }}</span>
+                                </div>
+                            </div>
+                            <div *ngIf="!$any(nft).highestBidFormatted" class="card-text price">
+                                <label class="dimmed">{{ 'nft.min-bid' | translate }}</label>
+                                <div class="price">
+                                    <img src="./../../assets/img/REEF_logo_small.png">
+                                    <span class="reef-price">{{ $any(nft).minBidFormatted | number:'1.0-2' }}</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <button *ngIf="nft.seller != currentAddress && nft.typeItem == TypeItem.REGULAR" class="btn btn-gradient buy-button" 
+                            (click)="buyNFT(nft)">{{ 'nft.buy' | translate }}</button>
+                        <button *ngIf="nft.seller == currentAddress" class="btn btn-primary view-button" 
+                            routerLink="/asset/{{nft.itemId}}">{{ 'nft.view' | translate }}</button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="typeItem == TypeItem.LOAN">
+            <div *ngFor="let nft of nfts" class="col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                <div class="card">
+                    <div class="card-img-top hover-pointer" [ngClass]="{'no-image': !nft.imageURI}" routerLink="/asset/{{ nft.itemId }}">
+                        <img *ngIf="nft.imageURI" src="{{ nft.imageURI }}">
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="nft.collection" class="card-text nft-collection hover-pointer" routerLink="/collection/{{nft.collection.id}}">
+                            {{ (nft.collection.name.length>30) ? (nft.collection.name | slice:0:30)+'...' : (nft.collection.name) }}
+                        </div>
+                        <div *ngIf="!nft.collection" class="card-text nft-collection"></div>
+                        <div class="card-text nft-name hover-pointer" routerLink="/asset/{{ nft.itemId }}">
+                            {{ (nft.name.length>30) ? (nft.name | slice:0:30)+'...' : (nft.name) }}
+                        </div>
+                        <div class="card-text price">
+                            <span class="label">{{ 'loan.loan' | translate }}:</span>
+                            <img src="./../../assets/img/REEF_logo_small.png">
+                            <span>{{ $any(nft).loanAmountFormatted | number:'1.0-2' }}</span>
+                        </div>
+                        <div class="card-text price">
+                            <span class="label">{{ 'loan.fee' | translate }}:</span>
+                            <img src="./../../assets/img/REEF_logo_small.png">
+                            <span>{{ $any(nft).feeAmountFormatted | number:'1.0-2' }}</span>
+                        </div>
+                        <div *ngIf="$any(nft).state == LoanState.OPEN" class="card-text">
+                            <span class="label mr-2">{{ 'loan.duration' | translate }}:</span>
+                            <span>{{ $any(nft).minutesDuration / (24 * 60) }} {{ 'loan.days' | translate }}</span>
+                        </div>
+                        <div *ngIf="$any(nft).state != LoanState.OPEN" class="card-text">
+                            <span class="label mr-2">{{ 'nft.deadline' | translate }}:</span>
+                            <span>{{ $any(nft).repayByDate | date:'dd/MM/yy hh:mm a' }}</span>
+                        </div>
+                        <button *ngIf="$any(nft).state == LoanState.OPEN && !($any(nft).deadlineReached) && $any(nft).borrower != currentAddress" 
+                            class="btn btn-gradient buy-button" (click)="fundLoan($any(nft))">{{ 'loan.fund' | translate }}</button>
+                        <button *ngIf="$any(nft).state == LoanState.OPEN && $any(nft).borrower == currentAddress" class="btn btn-primary view-button" 
+                            (click)="unlistLoan($any(nft))">{{ 'nft.delete-proposal' | translate }}</button>
+                        <button *ngIf="$any(nft).state == LoanState.BORROWED && $any(nft).deadlineReached && $any(nft).lender == currentAddress" 
+                            class="btn btn-gradient buy-button" (click)="liquidateLoan($any(nft))">{{ 'loan.liquidate' | translate }}</button>
+                        <button *ngIf="$any(nft).state == LoanState.BORROWED && !($any(nft).deadlineReached) && $any(nft).borrower == currentAddress" 
+                            class="btn btn-primary view-button" (click)="repayLoan($any(nft))">{{ 'loan.repay' | translate }}</button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="typeItem == TypeItem.RAFFLE">
+            <div *ngFor="let nft of nfts" class="col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                <div class="card">
+                    <div class="card-img-top hover-pointer" [ngClass]="{'no-image': !nft.imageURI}" routerLink="/asset/{{nft.itemId}}">
+                        <img *ngIf="nft.imageURI" src="{{ nft.imageURI }}">
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="nft.collection" class="card-text nft-collection hover-pointer" routerLink="/collection/{{nft.collection.id}}">
+                            {{ (nft.collection.name.length>30) ? (nft.collection.name | slice:0:30)+'...' : (nft.collection.name) }}
+                        </div>
+                        <div *ngIf="!nft.collection" class="card-text nft-collection"></div>
+                        <div class="card-text nft-name hover-pointer" routerLink="/asset/{{nft.itemId}}">
+                            {{ (nft.name.length>30) ? (nft.name | slice:0:30)+'...' : (nft.name) }}
+                        </div>
+                        <div class="card-text">
+                            <label class="pr-2">{{ 'nft.deadline' | translate }}:</label>
+                            <span>{{ $any(nft).deadline | date:'dd/MM/yy hh:mm a' }}</span>
+                        </div>
+                        <button class="btn btn-primary view-button" routerLink="/asset/{{nft.itemId}}">{{ 'nft.view' | translate }}</button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="typeItem == TypeItem.NONE">
+            <div *ngFor="let nft of nfts" class="col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                <div class="card">
+                    <div class="card-img-top hover-pointer" [ngClass]="{'no-image': !nft.imageURI}" routerLink="/asset/{{ nft.itemId }}">
+                        <img *ngIf="nft.imageURI" src="{{ nft.imageURI }}">
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="nft.collection" class="card-text nft-collection hover-pointer" routerLink="/collection/{{nft.collection.id}}">
+                            {{ (nft.collection.name.length>30) ? (nft.collection.name | slice:0:30)+'...' : (nft.collection.name) }}
+                        </div>
+                        <div *ngIf="!nft.collection" class="card-text nft-collection"></div>
+                        <div class="card-text nft-name hover-pointer" routerLink="/asset/{{ nft.itemId }}">
+                            {{ (nft.name.length>30) ? (nft.name | slice:0:30)+'...' : (nft.name) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="!nfts">
+        <div *ngFor="let i of [].constructor(12)" class="col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+            <div class="card">
+                <div class="card-img-top no-image placeholder-glow"></div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <span class="placeholder-glow w-75"></span>
+                    </div>
+                    <div class="card-text">
+                        <span class="placeholder-glow w-75"></span>
+                    </div>
+                    <div class="card-text">
+                        <span class="placeholder-glow w-25"></span>
+                    </div>
+                    <div class="card-text button-container-loading">
+                        <span class="placeholder-glow w-100 buy-button"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

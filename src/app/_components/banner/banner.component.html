@@ -1,0 +1,7 @@
+<div class="banner" [style.display]="display ? 'flex': 'none'">
+    <span>
+        <i class="zmdi zmdi-info"></i>
+        {{ 'banner.message' | translate }}
+    </span>
+    <i (click)="display = false" class="zmdi zmdi-close hover-pointer"></i>
+</div>

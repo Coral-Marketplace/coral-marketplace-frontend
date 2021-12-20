@@ -1,0 +1,445 @@
+<div class="main">
+    <div *ngIf="nft">
+        <div class="row nft-container">
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-img">
+                        <img *ngIf="nft.imageURI" src="{{ nft.imageURI }}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 pl-lg-5 nft-info">
+                <div class="name d-flex align-items-center mb-2">
+                    <span>{{ nft.name }}</span>
+                    <i *ngIf="nft.owner == currentAddress" class="hover-pointer zmdi zmdi-edit ml-3" 
+                        routerLink="/edit/{{nft.itemId}}"></i>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div *ngIf="nft.collection">
+                            <label class="dimmed">{{ 'nft.collection' | translate }}</label>
+                            <span class="hover-pointer" routerLink="/collection/{{nft.collection.id}}">
+                                {{ nft.collection.name }}
+                            </span>
+                        </div>
+                        <div *ngIf="nft.description">
+                            <label class="dimmed">{{ 'nft.description' | translate }}</label>
+                            <span>{{ nft.description }}</span>
+                        </div>
+                        <div>
+                            <label class="dimmed">{{ 'nft.mutable' | translate }}
+                                <i mat-raised-button matTooltipPosition="above" matTooltip="{{ 'tooltip.mutable' | translate }}"
+                                    class="zmdi zmdi-info-outline hover-pointer">
+                                </i>
+                            </label>
+                            <span *ngIf="nft.mutable" >{{ 'common.yes' | translate }}</span>
+                            <span *ngIf="!nft.mutable" >{{ 'common.no' | translate }}</span>
+                        </div>
+                        <div *ngIf="nft.properties?.length">
+                            <label class="dimmed">{{ 'nft.properties' | translate }}</label>
+                            <ul>
+                                <li *ngFor="let property of nft.properties">{{ property.name }}: {{ property.value }}</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <label class="dimmed">{{ 'nft.creator' | translate }}</label>
+                            <span>{{ nft.creator }}</span>
+                            <span *ngIf="nft.creator == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                        </div>
+                        <div *ngIf="nft.royaltiesAmount">
+                            <label class="dimmed">{{ 'nft.royalties' | translate }}</label>
+                            <span>{{ nft.royaltiesAmount }}%</span>
+                        </div>
+                        <div *ngIf="!nft.onSale">
+                            <label class="dimmed">{{ 'nft.owner' | translate }}</label>
+                            <span>{{ nft.owner }}</span> 
+                            <span *ngIf="nft.owner == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                        </div>
+                        <ng-container *ngIf="nft.onSale">
+                            <ng-container *ngIf="nft.typeItem == TypeItem.REGULAR">
+                                <div>
+                                    <label>{{ 'nft.seller' | translate }}</label>
+                                    <span>{{ nft.seller }}</span>
+                                    <span *ngIf="nft.seller == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                                </div>
+                                <div>
+                                    <label class="dimmed">{{ 'nft.price' | translate }}</label>
+                                    <div class="price">
+                                        <img src="./../../assets/img/REEF_logo_small.png">
+                                        <span class="reef-price">{{ nft.priceFormatted | number:'1.0-2' }}</span>
+                                        <span *ngIf="nft.dollarPrice" class="dimmed dollar-price">(${{ nft.dollarPrice | number:'1.2-2' }})</span>
+                                    </div>
+                                </div> 
+                            </ng-container>
+                            <ng-container *ngIf="nft.typeItem == TypeItem.AUCTION">
+                                <div>
+                                    <label>{{ 'nft.seller' | translate }}</label>
+                                    <span>{{ nft.seller }}</span>
+                                    <span *ngIf="nft.seller == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                                </div>
+                                <div *ngIf="$any(nft).highestBidFormatted">
+                                    <label class="dimmed">{{ 'nft.highest-bid' | translate }}</label>
+                                    <div class="price">
+                                        <img src="./../../assets/img/REEF_logo_small.png">
+                                        <span class="reef-price">{{ $any(nft).highestBidFormatted | number:'1.0-2' }}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="$any(nft).highestBidder">
+                                    <label class="dimmed">{{ 'nft.highest-bidder' | translate }}</label>
+                                    <span>{{ $any(nft).highestBidder }}</span>
+                                    <span *ngIf="$any(nft).highestBidder == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                                </div>
+                                <div *ngIf="!$any(nft).highestBidFormatted">
+                                    <label class="dimmed">{{ 'nft.min-bid' | translate }}</label>
+                                    <div class="price">
+                                        <img src="./../../assets/img/REEF_logo_small.png">
+                                        <span class="reef-price">{{ $any(nft).minBidFormatted | number:'1.0-2' }}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="dimmed">{{ 'nft.deadline' | translate }}:</label>
+                                    <span>{{ $any(nft).deadline | date:'dd/MM/yy hh:mm a' }}</span>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="nft.typeItem == TypeItem.RAFFLE">
+                                <div>
+                                    <label class="dimmed">{{ 'nft.owner' | translate }}</label>
+                                    <span>{{ nft.seller }}</span>
+                                    <span *ngIf="nft.seller == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                                </div>
+                                <div>
+                                    <label class="dimmed">{{ 'nft.deadline' | translate }}:</label>
+                                    <span>{{ $any(nft).deadline | date:'dd/MM/yy hh:mm a' }}</span>
+                                </div>
+                            </ng-container>                            
+                        </ng-container>     
+                        <div *ngIf="!nft.onSale && nft.owner == currentAddress" class="row mb-0 mt-4">
+                            <div class="col-4">
+                                <button class="btn btn-gradient sell-button w-100" (click)="openSaleModal(modalSale)">
+                                    {{ 'nft.put-on-sale' | translate }}
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-gradient sell-button w-100" (click)="openRaffleModal(modalRaffle)">
+                                    {{ 'nft.create-raffle' | translate }}
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-gradient sell-button w-100" (click)="openLoanModal(modalLoan)">
+                                    {{ 'nft.create-loan' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                        <button *ngIf="nft.onSale && nft.seller == currentAddress && nft.typeItem == TypeItem.REGULAR" 
+                            class="btn btn-secondary buy-button w-100" (click)="unlist()">
+                            {{ 'nft.unlist-item' | translate }}
+                        </button>
+                        <button *ngIf="nft.onSale && nft.seller != currentAddress && nft.typeItem == TypeItem.REGULAR" 
+                            class="btn btn-gradient buy-button w-100" (click)="buy()">
+                            {{ 'nft.buy' | translate }}
+                        </button>
+                        <button *ngIf="nft.onSale && nft.seller != currentAddress && nft.typeItem == TypeItem.AUCTION
+                            && !($any(nft).deadlineReached)" class="btn btn-gradient buy-button w-100" (click)="openInteractionModal(modalBid)">
+                            {{ 'nft.bid' | translate }}
+                        </button>
+                        <button *ngIf="nft.onSale && nft.typeItem == TypeItem.AUCTION && $any(nft).deadlineReached && (nft.seller == currentAddress || $any(nft).highestBidder == currentAddress)" 
+                            class="btn btn-secondary buy-button w-100" (click)="endAuction()">
+                            {{ 'nft.finalize-auction' | translate }}
+                        </button>
+                        <button *ngIf="nft.onSale && nft.typeItem == TypeItem.RAFFLE && $any(nft).deadlineReached" 
+                            class="btn btn-secondary buy-button w-100" (click)="endRaffle()">
+                            {{ 'nft.get-winner' | translate }}
+                        </button>
+                        <button *ngIf="nft.onSale && nft.typeItem == TypeItem.RAFFLE && !($any(nft).deadlineReached)" 
+                            class="btn btn-gradient buy-button w-100" (click)="openInteractionModal(modalEnterRaffle)">
+                            {{ 'nft.enter-raffle' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row sales-container">
+            <div class="col-12">
+                <div class="sales mb-2">{{ 'nft.sales' | translate }}</div>
+                <div class="card">
+                    <div class="card-body px-5 py-4">
+                        <div *ngIf="!nft.sales.length" class="m-0 text-center no-sales">
+                            {{ 'nft.no-sales' | translate }}
+                        </div>
+                        <div *ngFor="let sale of nft.sales" class="sale">
+                            <div>
+                                <label class="dimmed">{{ 'nft.seller' | translate }}</label>
+                                <span>{{ sale.seller }}</span>
+                                <span *ngIf="sale.seller == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                            </div>
+                            <div>
+                                <label class="dimmed">{{ 'nft.buyer' | translate }}</label>
+                                <span>{{ sale.buyer }}</span>
+                                <span *ngIf="sale.buyer == currentAddress" class="current-account dimmed">({{ 'nft.you' | translate }})</span>
+                            </div>
+                            <div>
+                                <label class="dimmed">{{ 'nft.price' | translate }}</label>
+                                <img src="./../../assets/img/REEF_logo_small.png">
+                                <span class="reef-price pr-1">{{ sale.price | number:'1.0-2' }}</span>
+                                <span *ngIf="sale.dollarPrice" class="dimmed dollar-price">(${{ sale.dollarPrice | number:'1.2-2' }})</span>
+                            </div> 
+                            <hr *ngIf="nft.sales.length > 1">
+                        </div>
+                        <div *ngIf="nft.sales.length > 1" class="mt-5">
+                            <app-chart [sales]="nft.sales"></app-chart>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placeholders -->
+    <div *ngIf="!nft">
+        <div class="row nft-container">
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-img no-image placeholder-glow"></div>
+                </div>
+            </div>
+            <div class="col-lg-7 pl-lg-5 nft-info">
+                <div class="name mb-2">
+                    <span class="placeholder-glow w-50"></span>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="card-text">
+                            <span class="placeholder-glow w-50"></span>
+                        </div>
+                        <div class="card-text">
+                            <span class="placeholder-glow w-75"></span>
+                        </div>
+                        <div class="card-text">
+                            <span class="placeholder-glow w-25"></span>
+                        </div>
+                        <div class="card-text">
+                            <span class="placeholder-glow w-50"></span>
+                        </div>
+                        <div class="card-text">
+                            <span class="placeholder-glow w-25"></span>
+                        </div>
+                        <div class="card-text">
+                            <span class="placeholder-glow w-75"></span>
+                        </div>
+                        <div class="card-text">
+                            <span class="placeholder-glow w-100"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row sales-container">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body px-5 py-4">
+                        <div class="m-0 text-center">
+                            <span class="placeholder-glow w-25"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Put on sale modal -->
+<ng-template #modalSale let-modalSale>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'nft.put-on-sale' | translate }}</h4>
+        <button type="button" class="close" (click)="modalSale.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="row px-3">
+                <div class="form-group col-6">
+                    <label for="fixedPrice " class="d-block">{{ 'nft.fixed-price' | translate }}</label>
+                    <mat-slide-toggle [(ngModel)]="fixedPrice" id="fixedPrice" name="fixedPrice"></mat-slide-toggle>    
+                </div>
+                <div *ngIf="!fixedPrice" class="form-group col-6">
+                    <label for="minBid">{{ 'nft.min-bid' | translate }}</label>
+                    <div class="price">
+                        <img class="mr-2" src="./../../assets/img/REEF_logo_small.png">
+                        <input type="number" class="form-control w-50" id="minBid" name="minBid" min="0" [(ngModel)]="minBid" ngModel> 
+                    </div>
+                </div>
+                <div *ngIf="!fixedPrice" class="form-group col-6">
+                    <label for="auctionDays">{{ 'nft.number-of-days' | translate }}<span class="required">&#42;</span></label>
+                    <input type="number" class="form-control w-50" id="auctionDays" name="auctionDays" min="1" [(ngModel)]="numDays" ngModel> 
+                </div>
+                <div *ngIf="fixedPrice" class="form-group col-6">
+                    <label for="price">{{ 'nft.price' | translate }}<span class="required">&#42;</span></label>
+                    <div class="price">
+                        <img class="mr-2" src="./../../assets/img/REEF_logo_small.png">
+                        <input type="number" class="form-control w-50" id="price" name="price" min="1" [(ngModel)]="nft.priceFormatted" ngModel> 
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="pr-2">{{ 'create-form.service-fee' | translate}}:</label>
+                    <span>{{ marketFee | number:'1.0-2' }} %</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalSale.close()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="fixedPrice ? putOnSale(modalSale) : putOnAuction(modalSale)" 
+            [disabled]="(fixedPrice && (!nft.priceFormatted || nft.priceFormatted <= 0)) || (!fixedPrice && (!numDays || numDays <= 0 || minBid < 0))">
+            {{ 'common.confirm' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<!-- Create raffle modal -->
+<ng-template #modalRaffle let-modalRaffle>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'nft.create-raffle' | translate }}</h4>
+        <button type="button" class="close" (click)="modalRaffle.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="px-3">
+                <div class="form-group">
+                    <label for="raffleDays">{{ 'nft.number-of-days' | translate }}<span class="required">&#42;</span></label>
+                    <input type="number" class="form-control w-25" id="raffleDays" name="raffleDays" min="1" [(ngModel)]="numDays" ngModel> 
+                </div>
+                <div>
+                    <label class="pr-2">{{ 'create-form.service-fee' | translate}}:</label>
+                    <span>{{ marketFee | number:'1.0-2' }} %</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRaffle.close()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="createRaffle(modalRaffle)" [disabled]="!numDays || numDays <= 0">
+            {{ 'common.confirm' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<!-- Create loan modal -->
+<ng-template #modalLoan let-modalLoan>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'nft.create-loan' | translate }}</h4>
+        <button type="button" class="close" (click)="modalLoan.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="row px-3">
+                <div class="form-group col-6">
+                    <label for="loanAmount">{{ 'loan.loan-amount' | translate }}<span class="required">&#42;</span></label>
+                    <div class="price">
+                        <img class="mr-2" src="./../../assets/img/REEF_logo_small.png">
+                        <input type="number" class="form-control w-75" id="loanAmount" name="loanAmount" min="1" [(ngModel)]="loanData.loanAmountFormatted" ngModel> 
+                    </div>
+                </div>
+                <div class="form-group col-6">
+                    <label for="loanDays">{{ 'nft.number-of-days' | translate }}<span class="required">&#42;</span></label>
+                    <input type="number" class="form-control w-50" id="loanDays" name="loanDays" min="1" [(ngModel)]="numDays" ngModel> 
+                </div>
+                <div class="form-group col-6">
+                    <label for="loanFee">{{ 'loan.payback-fee' | translate }}<span class="required">&#42;</span></label>
+                    <div class="price">
+                        <img class="mr-2" src="./../../assets/img/REEF_logo_small.png">
+                        <input type="number" class="form-control w-75" id="loanFee" name="loanFee" min="1" [(ngModel)]="loanData.feeAmountFormatted" ngModel> 
+                    </div>
+                </div>
+                <div class="col-12 text-justify">
+                    <i class="zmdi zmdi-info-outline mr-1"></i>
+                    {{ 'loan.loan-info' | translate }}
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalLoan.close()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="createLoan(modalLoan)" [disabled]="!loanData.loanAmountFormatted || loanData.loanAmountFormatted <= 0 || 
+            !numDays || numDays <= 0 || !loanData.feeAmountFormatted || loanData.feeAmountFormatted <= 0">
+            {{ 'common.confirm' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<!-- Enter raffle modal -->
+<ng-template #modalEnterRaffle let-modalEnterRaffle>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'nft.enter-raffle' | translate }}</h4>
+        <button type="button" class="close" (click)="modalEnterRaffle.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="px-3">
+                <div class="form-group">
+                    <label for="raffleAmount">{{ 'nft.amount' | translate }}<span class="required">&#42;</span></label>
+                    <input type="number" class="form-control w-25" id="raffleAmount" name="raffleAmount" min="1" [(ngModel)]="raffleAmount" ngModel> 
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalEnterRaffle.close()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="enterRaffle(modalEnterRaffle)" [disabled]="!raffleAmount || raffleAmount <= 0">
+            {{ 'common.confirm' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<!-- Bid modal -->
+<ng-template #modalBid let-modalBid>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'nft.bid' | translate }}</h4>
+        <button type="button" class="close" (click)="modalBid.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="row px-3">
+                <div class="col-6">
+                    <label *ngIf="$any(nft).highestBidFormatted" class="dimmed">{{ 'nft.highest-bid' | translate }}</label>
+                    <label *ngIf="!$any(nft).highestBidFormatted" class="dimmed">{{ 'nft.min-bid' | translate }}</label>
+                    <div class="price">
+                        <img src="./../../assets/img/REEF_logo_small.png">
+                        <span *ngIf="$any(nft).highestBidFormatted" class="reef-price">{{ $any(nft).highestBidFormatted | number:'1.0-2' }}</span>
+                        <span *ngIf="!$any(nft).highestBidFormatted" class="reef-price">{{ $any(nft).minBidFormatted | number:'1.0-2' }}</span>
+                    </div>
+                </div>
+                <div class="form-group col-6">
+                    <label for="bidAmount">{{ 'nft.amount' | translate }}<span class="required">&#42;</span></label>
+                    <input type="number" class="form-control w-50" id="bidAmount" name="bidAmount" min="1" [(ngModel)]="bidAmount" ngModel> 
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalBid.close()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="bid(modalBid)" [disabled]="!bidAmount || currentAddress != $any(nft).highestBidder && (bidAmount <= $any(nft).highestBidFormatted 
+            || bidAmount < $any(nft).minBidFormatted)">
+            {{ 'common.confirm' | translate }}
+        </button>
+    </div>
+</ng-template>

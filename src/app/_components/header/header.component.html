@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-primary mb-3 px-4">
+    <a class="navbar-brand" routerLink="/"><img src="./../../../assets/img/logo_white.png"></a>
+    <button class="navbar-toggler hidden-sm-up" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" 
+        data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" [routerLinkActive]="['active']">
+                <a class="nav-link" routerLink="/explore">{{ 'header.explore' | translate }}</a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['active']">
+                <a class="nav-link" routerLink="/lending">{{ 'header.lending' | translate }}</a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['active']">
+                <a class="nav-link" routerLink="/raffles">{{ 'header.raffles' | translate }}</a>
+            </li>
+            <li class="nav-item" *ngIf="(userService.userLoggedIn | async)" [routerLinkActive]="['active']">
+                <a class="nav-link" routerLink="/user/{{ userService.loggedAddress() }}">{{ 'header.profile' | translate }}</a>
+            </li>
+            <li class="nav-item" *ngIf="selectedSigner" [routerLinkActive]="['active']">
+                <a class="nav-link" routerLink="/create">{{ 'header.create' | translate }}</a>
+            </li>
+            <li class="pl-3 d-flex justify-content-between align-items-center action-buttons">
+                <span *ngIf="signers" class="hover-pointer mr-3">
+                    <i *ngIf="!(userService.userLoggedIn | async)" class="zmdi zmdi-balance-wallet zmdi-hc-2x" (click)="openModal(modal)"></i>
+                    <div *ngIf="selectedSigner && userService.userLoggedIn | async" class="identicon" [innerHTML]="selectedSigner?.identicon"
+                        (click)="openModal(modal)"></div>
+                </span>
+                <app-toggle-button [checked]="!darkMode" (changed)="toggleDarkMode($event)"></app-toggle-button>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<!-- Select account modal -->
+<ng-template #modal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'header.select-account' | translate }}</h4>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div *ngFor="let signer of signers" class="d-flex align-items-center justify-content-between p-2 hover-pointer address" 
+            (click)="selectedSignerTemp = signer">
+            <div class="d-flex align-items-center">
+                <div class="identicon mr-3" [innerHTML]="signer.identicon"></div>
+                {{ signer.name !== '' ? signer.name : signer.address }}
+            </div>
+            <i *ngIf="signer == selectedSignerTemp" class="zmdi zmdi-badge-check mr-2"></i>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="confirmSelection(modal)">
+            {{ 'common.select' | translate }}
+        </button>
+    </div>
+</ng-template>

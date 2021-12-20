@@ -1,0 +1,55 @@
+<div class="row m-0">
+    <ng-container *ngIf="collections">
+        <div *ngIf="!collections.length && emptyMessageKey" class="col-12 mt-4 empty">
+            <div class="d-flex justify-content-center align-items-center">
+                <img src="./../../../assets/img/sad.svg">
+                <span>{{ emptyMessageKey | translate }}</span>
+            </div>
+        </div>
+        <div *ngFor="let collection of collections" class="col-sm-6 col-md-4 col-xxl-3">
+            <div class="card">
+                <div class="card-img-top collection-banner hover-pointer" [ngClass]="{'no-image': !collection.coverImage}" routerLink="/collection/{{collection.id}}">
+                    <img *ngIf="collection.coverImage" src="{{ collection.coverImage }}">
+                </div>
+                <div class="avatar avatar-sm">
+                    <div class="hover-pointer" routerLink="/collection/{{collection.id}}" 
+                        [style.backgroundImage]="collection.logo ? 'url('+ collection.logo +')' : 'none'">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="collection-name hover-pointer" routerLink="/collection/{{collection.id}}">
+                        {{ (collection.name.length>30) ? (collection.name | slice:0:30)+'...' : (collection.name) }}
+                    </div>
+                    <div class="collection-info pb-0 dimmed">
+                        {{ 'collection.num-items' | translate }}: {{ collection.itemIds.length }}
+                    </div>
+                    <div class="collection-info">
+                        {{ collection.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="!collections">
+        <div *ngFor="let i of [].constructor(12)" class="col-sm-6 col-md-4 col-xxl-3">
+            <div class="card">
+                <div class="card-img-top no-image collection-banner placeholder-glow"></div>
+                <div class="avatar avatar-sm">
+                    <div [style.backgroundImage]="'none'"></div>
+                </div>
+                <div class="card-body">
+                    <div class="collection-name ">
+                        <span class="placeholder-glow w-25"></span>
+                    </div>
+                    <div class="collection-info pb-0">
+                        <span class="placeholder-glow w-25"></span>
+                    </div>
+                    <div class="collection-info">
+                        <span class="placeholder-glow w-100"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,101 @@
+.card {
+    border-radius: 0.75rem;
+    margin-bottom: 1.75rem;
+
+    .card-img-top, .card-img {
+        border-top-left-radius: calc(0.75rem - 1px);
+        border-top-right-radius: calc(0.75rem - 1px);
+
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 100%;
+        display: flex;
+        justify-content: center;
+    
+        img {
+            position: absolute;
+            object-fit: contain;
+            height: 100%;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    
+        &.no-image {
+            background-color: #a4a4a4;
+        }
+
+        &.collection-banner {
+            padding-bottom: 40%;
+
+            img {
+                object-fit: cover;
+            }
+        }
+    }
+
+    .card-img {
+        border-radius: calc(0.75rem - 1px);
+    }
+
+    .card-body {
+        padding: 1rem;
+        font-size: .8rem;
+
+        .card-text {
+            height: 1.5rem;
+
+            &.nft-name {
+                height: 1.6rem;
+                font-size: 1.1rem;
+                font-weight: bold;
+            }
+
+            &.nft-collection {
+                height: 1.2rem;
+                color: $color-dimmed;
+            }
+
+            &.price {
+                display: flex;
+                align-items: center;
+            
+                img {
+                    height: 16px;
+                    margin-right: 5px;
+                }
+    
+                .label {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .collection-name {
+            height: 1.7rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .collection-info {
+            font-size: 1rem;
+            padding: 1rem;
+            text-align: justify;
+        }
+
+        .buy-button, .view-button {
+            font-size: .8rem;
+            width: 100%;
+            margin-top: .5rem;
+        }
+
+        .button-container-loading {
+            height: 2.5rem;
+    
+            span {
+                height: 2rem;
+            }
+        }
+    }
+}

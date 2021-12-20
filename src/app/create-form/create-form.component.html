@@ -1,0 +1,218 @@
+<div class="main">
+    <div class="row">
+        <div class="col-lg-5">
+            <div *ngIf="!edition || nft.mutable" class="mb-4">
+                <ngx-file-drop (onFileDrop)="dropped($event, 'nft')" [multiple]="false" accept=".jpg,.jpeg,.gif,.webp,.svg,.png">
+                    <div class="upload-button-container">
+                        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                            <span class="d-block">{{ 'create-form.supported-formats' | translate}}: PNG, JPEG, SVG, GIF, WEBP</span>
+                            <span class="d-block">{{ 'create-form.max-size' | translate }}: 10 MB</span>
+                            <button class="btn btn-primary" (click)="openFileSelector()">
+                                <i class="ti-cloud-up"></i> {{ 'create-form.upload-image' | translate }}
+                            </button>
+                        </ng-template>
+                    </div>
+                </ngx-file-drop>
+                <div *ngIf="f.submitted && !newImage" class="error-msg text-center mt-3">
+                    {{ 'create-form.upload-an-image' |translate }}
+                </div>
+            </div>
+            <div class="card mx-lg-5" *ngIf="nft.imageURI">
+                <div class="card-img">
+                    <img *ngIf="nft.imageURI" src="{{ nft.imageURI }}">
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 pl-lg-5">
+            <form name="form" #f="ngForm" (ngSubmit)="!f.form.errors && (edition || newImage) && submit()">
+                <div>
+                    <div class="form-group">
+                        <label for="name">{{ 'nft.name' | translate }}<span class="required">&#42;</span></label>
+                        <input type="text" class="form-control" id="name" name="name" required placeholder="{{ 'nft.name' | translate }}" 
+                            [(ngModel)]="nft.name" #name="ngModel" [class.error]="f.submitted && name.errors" [disabled]="edition && !nft.mutable">
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="description">{{ 'nft.description' | translate }}</label>
+                        <textarea class="form-control" id="description" name="description" placeholder="{{ 'nft.description' | translate }}" 
+                            [(ngModel)]="nft.description" #description="ngModel" rows="3" [disabled]="edition && !nft.mutable"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12 col-md-4">
+                        <label for="mutable" class="d-block">{{ 'nft.mutable' | translate }}
+                            <i mat-raised-button matTooltipPosition="above" matTooltip="{{ 'tooltip.mutable' | translate }}"
+                                class="zmdi zmdi-info-outline hover-pointer">
+                            </i>
+                        </label>
+                        <mat-slide-toggle *ngIf="!edition" [(ngModel)]="nft.mutable" id="mutable" name="mutable"></mat-slide-toggle>
+                        <span *ngIf="edition && nft.mutable" >{{ 'common.yes' | translate }}</span>
+                        <span *ngIf="edition && !nft.mutable" >{{ 'common.no' | translate }}</span>
+                    </div>
+                    <div class="form-group existingRoyalties col-12 col-md-8">
+                        <label for="royaltiesAmount">{{ 'nft.royalties' | translate }} %</label>
+                        <div *ngIf="!edition" class="mt-3">
+                            <mat-slider thumbLabel step="100" min="0" max="5000" name="royaltiesAmount" [displayWith]="formatLabel"
+                                [(ngModel)]="nft.royaltiesAmount" class="w-100">
+                            </mat-slider>
+                        </div>
+                        <input *ngIf="edition" type="number" class="form-control" name="royaltiesAmount" disabled 
+                            [value]="nft.royaltiesAmount">
+                    </div>
+                </div>
+                <div>
+                    <label>{{ 'nft.properties' | translate }}</label>
+                    <div *ngIf="!edition || nft.mutable" class="row">
+                        <div *ngIf="!nft.properties?.length" class="col-12 mb-4">
+                            <span>{{ 'create-form.add-property' | translate }}</span>
+                            <i class="zmdi zmdi-plus-circle ml-2 hover-pointer" (click)="addProperty(-1)"></i>
+                        </div>
+                        <ng-container *ngFor="let property of nft.properties; index as i; last as last; trackBy: trackByIndex;">
+                            <div class="form-group col-11 row">
+                                <div class="col-md-6 pr-0">
+                                    <input class="form-control" name="property-name-{{i}}" [(ngModel)]="property.name" required
+                                        placeholder="{{ 'nft.name' | translate }}" #propName="ngModel">
+                                </div>
+                                <div class="col-md-6 pr-0">
+                                    <input class="form-control" name="property-value-{{i}}" [(ngModel)]="property.value" required
+                                        placeholder="{{ 'nft.value' | translate }}" #propValue="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-1 pt-2">
+                                <i class="zmdi zmdi-delete hover-pointer" (click)="removeProperty(i)"></i>
+                                <i class="zmdi zmdi-plus-circle ml-2 hover-pointer" (click)="addProperty(i)"></i>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="edition && !nft.mutable" class="row">
+                        <ul>
+                            <li *ngFor="let property of nft.properties">{{ property.name }}: {{ property.value }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div *ngIf="!edition || isCreator || !nft.collection ">
+                    <label>{{ 'create-form.add-to-collection' | translate }}</label>
+                    <div *ngIf="nft.collection" class="d-flex align-items-center mb-3">
+                        <div class="round-img img-sm mr-2">
+                            <img [src]="nft.collection.logo">
+                        </div>
+                        <span>{{ nft.collection.name }}</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" type="button" (click)="openSelectModal(selectModal)">
+                            {{ 'create-form.existing-collection' | translate }} 
+                            <i class="zmdi zmdi-menu"></i>
+                        </button>
+                        <button class="btn btn-secondary ml-2" type="button" (click)="openCreateModal(createModal)">
+                            {{ 'create-form.new-collection' | translate }}
+                            <i class="zmdi zmdi-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary float-right">
+                        <ng-container *ngIf="!edition">{{ 'create-form.create' | translate }}</ng-container>
+                        <ng-container *ngIf="edition">{{ 'create-form.edit' | translate }}</ng-container>
+                    </button>
+                    <button type="button" class="btn btn-secondary float-right mr-2" (click)="cancelCreation()">
+                        {{ 'common.cancel' | translate }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Select collection modal -->
+<ng-template #selectModal let-selectModal>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'create-form.select-collection' | translate }}</h4>
+        <button type="button" class="close" (click)="selectModal.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body pb-3">
+        <div *ngIf="!collections.length">{{ 'create-form.collections-empty' | translate }}</div>
+        <div *ngFor="let collection of collections" class="d-flex align-items-center justify-content-between p-2 hover-pointer address" 
+            (click)="selectCollection(collection, selectModal)">
+            <div class="d-flex align-items-center">
+                <div class="round-img img-sm mr-2">
+                    <img [src]="collection.logo">
+                </div>
+                <span>{{ collection.name }}</span>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Create collection modal -->
+<ng-template #createModal let-createModal>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ 'create-form.new-collection' | translate }}</h4>
+        <button type="button" class="close" (click)="createModal.close()">
+            <i class="zmdi zmdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div>
+                <div class="form-group">
+                    <label for="colName">{{ 'nft.name' | translate }}<span class="required">&#42;</span></label>
+                    <input type="text" class="form-control" id="colName" name="colName" placeholder="{{ 'nft.name' | translate }}" 
+                        [(ngModel)]="newCollection.name" #colName="ngModel">
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="colDescription">{{ 'nft.description' | translate }}</label>
+                    <textarea class="form-control" id="colDescription" name="colDescription" placeholder="{{ 'nft.description' | translate }}" 
+                        [(ngModel)]="newCollection.description" #colDescription="ngModel" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label>{{ 'create-form.logo' | translate }}<span class="required">&#42;</span></label>
+                <ngx-file-drop *ngIf="!newCollection.logo" (onFileDrop)="dropped($event, 'colLogo')" [multiple]="false" accept=".jpg,.jpeg,.gif,.webp,.svg,.png">
+                    <div class="upload-button-container" [style.backgroundImage]>
+                        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                            <span class="d-block">{{ 'create-form.supported-formats' | translate}}: PNG, JPEG, SVG, GIF, WEBP</span>
+                            <span class="d-block">{{ 'create-form.max-size' | translate }}: 1 MB</span>
+                            <button class="btn btn-primary" (click)="openFileSelector()">
+                                <i class="ti-cloud-up"></i> {{ 'create-form.upload-image' | translate }}
+                            </button>
+                        </ng-template>
+                    </div>
+                </ngx-file-drop>
+                <div *ngIf="newCollection.logo" class="round-img m-auto">
+                    <img [src]="newCollection.logo">
+                </div>
+            </div>
+            <div>
+                <label>{{ 'create-form.banner' | translate }}</label>
+                <ngx-file-drop *ngIf="!newCollection.coverImage" (onFileDrop)="dropped($event, 'colBanner')" [multiple]="false" accept=".jpg,.jpeg,.gif,.webp,.svg,.png">
+                    <div class="upload-button-container">
+                        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                            <span class="d-block">{{ 'create-form.supported-formats' | translate}}: PNG, JPEG, SVG, GIF, WEBP</span>
+                            <span class="d-block">{{ 'create-form.max-size' | translate }}: 1 MB</span>
+                            <button class="btn btn-primary" (click)="openFileSelector()">
+                                <i class="ti-cloud-up"></i> {{ 'create-form.upload-image' | translate }}
+                            </button>
+                        </ng-template>
+                    </div>
+                </ngx-file-drop>
+                <div *ngIf="newCollection.coverImage" class="banner-preview">
+                    <img [src]="newCollection.coverImage">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="createModal.close()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="createCollection(createModal)"
+            [disabled]="!newCollection.name || newCollection.name.trim() == '' || !newCollection.logoFile">
+            {{ 'create-form.create' | translate }}
+        </button>
+    </div>
+</ng-template>

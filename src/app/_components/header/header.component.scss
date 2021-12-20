@@ -1,0 +1,23 @@
+@import '/src/assets/scss/variable.scss';
+
+.navbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+
+    i {
+        color: $color-dark !important;
+    }
+
+    .navbar-brand img {
+        max-height: 32px;
+    }
+
+    .navbar-collapse.show .action-buttons {
+        margin-top: .75rem;
+        padding-top: .5rem;
+        border-top: $color-dark 1px solid;
+    }
+}

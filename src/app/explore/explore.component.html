@@ -1,0 +1,24 @@
+<div class="main">
+    <mat-tab-group mat-align-tabs="center">
+        <mat-tab label="{{ 'explore.last-collections' | translate }}">
+            <app-collection-list 
+                [collections]="collections" 
+                emptyMessageKey="explore.collections-empty"
+            ></app-collection-list>
+        </mat-tab>
+        <mat-tab label="{{ 'explore.nfts-on-sale' | translate }}">
+            <app-nft-list 
+                [nfts]="nftsOnSale" 
+                [typeItem]="TypeItem.REGULAR"
+                emptyMessageKey="explore.nft-on-sale-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab label="{{ 'explore.active-bids' | translate }}">
+            <app-nft-list 
+                [nfts]="bids" 
+                [typeItem]="TypeItem.AUCTION"
+                emptyMessageKey="explore.bids-empty"
+            ></app-nft-list>
+        </mat-tab>
+    </mat-tab-group>
+</div>

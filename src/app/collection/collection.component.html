@@ -1,0 +1,42 @@
+<div class="cover-image" [class.edit-cover]="isOwner" (click)="isOwner && uploadCover.click()">
+    <img *ngIf="collection?.coverImage" [src]="collection.coverImage">
+    <i *ngIf="isOwner" class="zmdi zmdi-edit zmdi-hc-2x"></i>
+    <input type="file" (change)="onFileUpload($event, 'cover')" (click)="onFileUploadClick(uploadCover)"
+        accept="image/png, image/jpeg, image/webp, image/ico" hidden #uploadCover>
+</div>
+<div class="avatar">
+    <div [style.backgroundImage]="collection?.logo ? 'url('+ collection.logo +')' : 'none'"></div>
+    <div *ngIf="isOwner" class="edit-avatar" (click)="uploadLogo.click()">
+        <i class="zmdi zmdi-edit zmdi-hc-2x"></i>
+    </div>
+    <input type="file" (change)="onFileUpload($event, 'logo')" (click)="onFileUploadClick(uploadLogo)"
+        accept="image/png, image/jpeg, image/webp, image/ico" hidden #uploadLogo>
+    <i *ngIf="unsavedChanges" class="zmdi zmdi-floppy zmdi-hc-2x save-profile" (click)="saveChanges()"></i>
+</div>
+<div class="user-info p-3">
+    <div *ngIf="collection" class="user-name">
+        <span *ngIf="!editName" (click)="isOwner && editName = true" [class.hover-pointer]="isOwner">
+            {{collection.name}}
+        </span>
+        <mat-form-field *ngIf="editName" appearance="fill">
+            <input matInput type="text" [(ngModel)]="collection.name" (blur)="onBlur()" (keydown)="onKeydown($event)"
+                placeholder="{{ 'nft.name' | translate }}" >
+        </mat-form-field>
+    </div>
+    <div *ngIf="collection" class="user-name">
+        <span *ngIf="!editDesc" (click)="isOwner && editDesc = true" [class.hover-pointer]="isOwner">
+            {{collection.description}}
+        </span>
+        <mat-form-field *ngIf="editDesc" appearance="fill">
+            <input matInput type="text" [(ngModel)]="collection.description" (blur)="onBlur()" (keydown)="onKeydown($event)"
+                placeholder="{{ 'nft.description' | translate }}" >
+        </mat-form-field>
+    </div>
+</div>
+<div class="main">
+    <app-nft-list 
+        [nfts]="nfts" 
+        [typeItem]="TypeItem.NONE"
+        emptyMessageKey="nft.collection-empty"
+    ></app-nft-list>
+</div>

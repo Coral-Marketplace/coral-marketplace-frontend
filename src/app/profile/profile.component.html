@@ -1,0 +1,86 @@
+<div class="cover-image" [class.edit-cover]="currentUser" (click)="currentUser && uploadCover.click()">
+    <img *ngIf="user?.coverImage" [src]="user.coverImage">
+    <i *ngIf="currentUser" class="zmdi zmdi-edit zmdi-hc-2x"></i>
+    <input type="file" (change)="onFileUpload($event, 'cover')" (click)="onFileUploadClick(uploadCover)"
+        accept="image/png, image/jpeg, image/webp, image/ico" hidden #uploadCover>
+</div>
+<div class="avatar">
+    <div [style.backgroundImage]="user?.avatar ? 'url('+ user.avatar +')' : 'none'"></div>
+    <div *ngIf="currentUser" class="edit-avatar" (click)="uploadAvatar.click()">
+        <i class="zmdi zmdi-edit zmdi-hc-2x"></i>
+    </div>
+    <input type="file" (change)="onFileUpload($event, 'avatar')" (click)="onFileUploadClick(uploadAvatar)"
+        accept="image/png, image/jpeg, image/webp, image/ico" hidden #uploadAvatar>
+    <i *ngIf="unsavedChanges" class="zmdi zmdi-floppy zmdi-hc-2x save-profile" (click)="saveChanges()"></i>
+</div>
+<div class="user-info p-3">
+    <div *ngIf="user" class="user-name">
+        <span *ngIf="!editName" (click)="currentUser && editName = true" [class.hover-pointer]="currentUser">{{user.name}}</span>
+        <mat-form-field *ngIf="editName" appearance="fill">
+            <input matInput type="text" [(ngModel)]="user.name" (blur)="onBlur()" (keydown)="onKeydown($event)"
+                placeholder="{{ 'profile.name' | translate }}" >
+        </mat-form-field>
+    </div>
+    <div *ngIf="user?.publicAddress" class="user-address">
+        <span>{{user.publicAddress}}</span>
+    </div>
+</div>
+<div class="main">
+    <mat-tab-group mat-align-tabs="center">
+        <mat-tab label="{{ 'profile.owned' | translate }}">
+            <app-nft-list 
+                [nfts]="ownedNFTs" 
+                [typeItem] = "TypeItem.NONE"
+                emptyMessageKey="profile.owned-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab label="{{ 'profile.on-sale' | translate }}">
+            <app-nft-list 
+                [nfts]="onSaleNFTs" 
+                [typeItem] = "TypeItem.NONE"
+                emptyMessageKey="profile.on-sale-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab label="{{ 'profile.raffles' | translate }}">
+            <app-nft-list 
+                [nfts]="openRaffles" 
+                [typeItem] = "TypeItem.RAFFLE"
+                emptyMessageKey="profile.raffles-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab *ngIf="!currentUser" label="{{ 'profile.open-loans' | translate }}">
+            <app-nft-list 
+                [nfts]="openLoans" 
+                [typeItem] = "TypeItem.LOAN"
+                emptyMessageKey="profile.open-loans-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab label="{{ 'profile.collections' | translate }}">
+            <app-collection-list 
+                [collections]="collections" 
+                emptyMessageKey="profile.collections-empty"
+            ></app-collection-list>
+        </mat-tab>
+        <mat-tab label="{{ 'profile.created' | translate }}">
+            <app-nft-list 
+                [nfts]="createdNFTs" 
+                [typeItem] = "TypeItem.NONE"
+                emptyMessageKey="profile.created-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab *ngIf="currentUser" label="{{ 'profile.bids' | translate }}">
+            <app-nft-list 
+                [nfts]="auctionBids" 
+                [typeItem] = "TypeItem.REGULAR"
+                emptyMessageKey="profile.bids-empty"
+            ></app-nft-list>
+        </mat-tab>
+        <mat-tab *ngIf="currentUser" label="{{ 'profile.loans' | translate }}">
+            <app-nft-list 
+                [nfts]="activeLoans" 
+                [typeItem] = "TypeItem.LOAN"
+                emptyMessageKey="profile.open-loans-empty"
+            ></app-nft-list>
+        </mat-tab>
+    </mat-tab-group>
+</div>
