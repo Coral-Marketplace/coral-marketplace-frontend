@@ -1,7 +1,7 @@
 # Coral Marketplace frontend
 
 <p align="center">
-<img style="text-align:center;" src="/coral.png">
+<img style="text-align:center;" src="/images/coral.png">
 </p>
 
 An NFT marketplace for the [Reef Network](https://reef.finance/).
