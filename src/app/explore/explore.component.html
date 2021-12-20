@@ -13,11 +13,11 @@
                 emptyMessageKey="explore.nft-on-sale-empty"
             ></app-nft-list>
         </mat-tab>
-        <mat-tab label="{{ 'explore.active-bids' | translate }}">
+        <mat-tab label="{{ 'explore.open-auctions' | translate }}">
             <app-nft-list 
-                [nfts]="bids" 
-                [typeItem]="TypeItem.AUCTION"
-                emptyMessageKey="explore.bids-empty"
+                [nfts]="openAuctions" 
+                [typeItem]="TypeItem.REGULAR"
+                emptyMessageKey="explore.open-auctions-empty"
             ></app-nft-list>
         </mat-tab>
     </mat-tab-group>

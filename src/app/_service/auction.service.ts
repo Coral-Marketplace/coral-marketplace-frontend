@@ -23,6 +23,12 @@ constructor(private reefService: ReefService,
     return this.mapAuction(item, true);
 	}
 
+  async fetchOpenAuctions(): Promise<NftAuction[]> {
+		const openAuctions = await this.reefService.marketContract.connect(this.reefService.evmProvider).fetchAuctions();
+    
+    return await this.mapAuctions(openAuctions);
+	}
+
   async getAddressBids(address: string): Promise<NftAuction[]> {
 		const rawAuctions = await this.reefService.marketContract.connect(this.reefService.evmProvider).fetchAuctions();
     

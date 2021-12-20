@@ -38,10 +38,10 @@
     "explore": {
         "last-collections": "Last collections",
         "nfts-on-sale": "Items on sale",
-        "active-bids": "Active bids",
+        "open-auctions": "Open auctions",
         "collections-empty": "There are no collections yet.",
-        "nft-on-sale-empty": "There are no items on sale yet.",
-        "bids-empty": "There are no bids yet."
+        "nft-on-sale-empty": "There are no items on sale.",
+        "open-auctions-empty": "There are no open auctions."
     },
     "nft": {
         "owner": "Owner",

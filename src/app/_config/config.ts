@@ -22,17 +22,17 @@ export const IPFS_PREFIX_URL = 'https://ipfs.infura.io/ipfs/';
 export const REEF_TESTNET: NetworkConfig = {
     testnet: true,
     rpcUrl: 'wss://rpc-testnet.reefscan.com/ws',
-    marketplaceContractAddress: '0xb17256c5EDFFd9afeb5d3674FCB68e4810a3C55d',
-    loanContractAddress: '0x33E584cbc7711e060333DC734295F042b7C7D63C',
-    nftContractAddress: '0x385F8e0cfde4fD696D4688FF21138A7A6464794b'
+    marketplaceContractAddress: '0x17b1C987520dE98B85c9cF9c8cE92333228034Bb',
+    loanContractAddress: '0xC8e7e2F541D1BED81d70D4f216b7D06A688E53a8',
+    nftContractAddress: '0x02C7921BaB3054FCcd62c987aeB7d303D66b300E'
 };
 
 export const REEF_MAINNET: NetworkConfig = {
     testnet: false,
     rpcUrl: 'wss://rpc.reefscan.com/ws',
-    marketplaceContractAddress: '0xDaADa3D7da9558cd1352cABcbCD3878bcD0Ec2D8',
-    loanContractAddress: '0x7c32286CBc09f9D15D9350353e316c33Ce2bF71C',
-    nftContractAddress: '0x5f3E142149EC338C46E65ba4455c9c1BEFa50DB1'
+    marketplaceContractAddress: '0x79a46FCDAF4989960219843989dAC9FAf35d3489',
+    loanContractAddress: '0xB9EfC4Eb306e2BDD1F21246B7e2CEE075dDf1663',
+    nftContractAddress: '0xa12b4607090E8dB9F1F7B07754eEf89A493cF746'
 };
 
 

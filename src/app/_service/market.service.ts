@@ -23,8 +23,7 @@ constructor(private reefService: ReefService,
             private httpClient: HttpClient) { }
 
   async getItemsOnSale(): Promise<NFT[]> {
-		const allNFTs = await this.reefService.marketContract.connect(this.reefService.evmProvider).fetchItemsOnSale();
-    const availableNFTs = allNFTs.filter((nft: any) => nft.onSale);
+		const availableNFTs = await this.reefService.marketContract.connect(this.reefService.evmProvider).fetchItemsOnSale();
 
     return this.mapNfts(availableNFTs);
   }

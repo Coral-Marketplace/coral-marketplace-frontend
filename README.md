@@ -6,8 +6,7 @@
 
 An NFT marketplace for the [Reef Network](https://reef.finance/).
 
-
-[![Video demo](https://i.imgur.com/DBDwW1b.png)](https://www.youtube.com/watch?v=zUpJD9R_zao)
+![screenshot1](/images/screenshot-1.png)
 
 ## Features
 - NFTs creation: Create ERC721 NFTs, with optional royalties (implementing [EIP-2981: NFT Royalty Standard](https://eips.ethereum.org/EIPS/eip-2981)) and choose if you want to lock the properties of the NFT or want it to be mutable.
