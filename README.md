@@ -1,8 +1,6 @@
 # Coral Marketplace frontend
 
-<p align="center">
-<img style="text-align:center;" src="/images/logo_coral_large.png">
-</p>
+[![Video demo](/images/Video.png)](https://www.youtube.com/watch?v=LIgsm4qeCNU)
 
 ## An NFT marketplace for the [Reef Network](https://reef.finance/).
 
