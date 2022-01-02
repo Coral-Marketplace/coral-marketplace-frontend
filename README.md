@@ -1,8 +1,6 @@
 # Coral Marketplace frontend
 
-<p align="center">
-<img style="text-align:center;" src="/images/logo_coral_large.png">
-</p>
+[![Video demo](/images/Video.png)](https://www.youtube.com/watch?v=LIgsm4qeCNU)
 
 ## An NFT marketplace for the [Reef Network](https://reef.finance/).
 
@@ -46,9 +44,9 @@ The application will open in _localhost:4200_.
 ## Future developments
 
 These are some of the features planned for future developments:
-- Mobile support.
+- UI enhancements
+- Mobile support
 - Dynamic royalties based on the number of sales
-- NFT collections
 - Support for more file formats
 - Ratings system
 - Bulk upload
