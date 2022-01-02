@@ -20,16 +20,17 @@
         </span>
         <mat-form-field *ngIf="editName" appearance="fill">
             <input matInput type="text" [(ngModel)]="collection.name" (blur)="onBlur()" (keydown)="onKeydown($event)"
-                placeholder="{{ 'nft.name' | translate }}" >
+                placeholder="{{ 'nft.name' | translate }}">
         </mat-form-field>
     </div>
-    <div *ngIf="collection" class="user-name">
+    <div *ngIf="collection" class="description">
         <span *ngIf="!editDesc" (click)="isOwner && editDesc = true" [class.hover-pointer]="isOwner">
             {{collection.description}}
         </span>
-        <mat-form-field *ngIf="editDesc" appearance="fill">
-            <input matInput type="text" [(ngModel)]="collection.description" (blur)="onBlur()" (keydown)="onKeydown($event)"
-                placeholder="{{ 'nft.description' | translate }}" >
+        <mat-form-field *ngIf="editDesc" appearance="fill" class="w-100">
+            <textarea matInput type="text" [(ngModel)]="collection.description" (blur)="onBlur()" (keydown)="onKeydown($event)"
+                placeholder="{{ 'nft.description' | translate }}">
+            </textarea>
         </mat-form-field>
     </div>
 </div>

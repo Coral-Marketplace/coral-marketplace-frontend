@@ -18,9 +18,12 @@
                     <div class="card-body p-4">
                         <div *ngIf="nft.collection">
                             <label class="dimmed">{{ 'nft.collection' | translate }}</label>
-                            <span class="hover-pointer" routerLink="/collection/{{nft.collection.id}}">
-                                {{ nft.collection.name }}
-                            </span>
+                            <div class="d-flex align-items-center mb-3 hover-pointer" routerLink="/collection/{{nft.collection.id}}">
+                                <div class="round-img img-xs mr-2">
+                                    <img [src]="nft.collection.logo">
+                                </div>
+                                <span>{{ nft.collection.name }}</span>
+                            </div>
                         </div>
                         <div *ngIf="nft.description">
                             <label class="dimmed">{{ 'nft.description' | translate }}</label>

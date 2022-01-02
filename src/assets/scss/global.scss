@@ -61,7 +61,7 @@ body {
         }
     }
 
-    .avatar div, .round-img, .banner-preview {
+    .avatar div, .banner-preview {
         border: 3px solid $bg-light-secondary;
     }
 
@@ -161,7 +161,7 @@ body {
             }
         }
 
-        .avatar div, .round-img, .banner-preview {
+        .avatar div, .banner-preview {
             border: 3px solid $bg-light;
         }
 
@@ -402,6 +402,12 @@ body {
         font-size: 1.2rem;
         text-align: center;
     }
+
+    .description {
+        text-align: justify;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
 }
 
 .round-img {
@@ -413,6 +419,11 @@ body {
     &.img-sm {
         height: 50px;
         width: 50px;
+    }
+
+    &.img-xs {
+        height: 30px;
+        width: 30px;
     }
 
     img {
